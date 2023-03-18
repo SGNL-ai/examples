@@ -1,0 +1,70 @@
+ <inbound>
+        <!-- Set variables for request to SGNL Access Service. The sample gets the principal from the JSBON body, HTTP method and backend URI requesed via
+        the request object.
+         -->
+        <set-variable name="principal" value="@(context.Request.Body.As<JObject>(preserveContent: true).SelectToken("principal"))" />
+        <set-variable name="accountType" value="@(context.Request.Body.As<JObject>(preserveContent: true).SelectToken("account.type"))" />
+        <set-variable name="method" value="@(context.Request.Method)" />
+        <set-variable name="backendUri" value="@(context.Request.Url.Path)" />
+        <!-- Send the authorize request to the SGNL access service. Note: We include the principal, assetId, and action in the request. -->
+        <send-request mode="new" response-variable-name="response" timeout="10" ignore-error="false">
+            <set-url>@("{{your SGNL client URL}}")</set-url>
+            <set-method>POST</set-method>
+            <!-- Set bearer token coming in from request header. This is used to call the SGNL Access Service API. -->
+            <set-header name="Authorization" exists-action="override">
+                <value>@(context.Request.Headers.GetValueOrDefault("Authorization"))</value>
+            </set-header>
+            <!-- Set additional headers for the request to the SGNL Access Service. -->
+            <set-header name="Content-Type" exists-action="override">
+                <value>application/json</value>
+            </set-header>
+            <set-header name="Accept-Encoding" exists-action="override">
+                <value>gzip,deflate,br</value>
+            </set-header>
+            <!-- Set the post JSON body for the request to the SGNL Access Service using the liquid template.-->
+            <set-body template="liquid">
+            {
+	                    "principal": {
+		                "id":"{{context.Variables["principal"]}}"
+	                    },
+	                        "queries": [{
+	                    	"assetId": "{{context.Variables["backendUri"]}}",
+                             "action": "{{context.Variables["method"]}}"
+	                            },
+                                {
+                               "assetId": "{{context.Variables["accountType"]}}",
+                               "action": "Create"
+                                }
+                                ]
+                         }
+            }	        
+            </set-body>
+        </send-request>
+        <!-- Check access service resopnse. If API client is not authorized to call the API send a 401 status code. -->
+        <choose>
+            <when condition="@((int)((IResponse)context.Variables["response"]).StatusCode == 401)">
+                <!-- Return 401 Unauthorized -->
+                <return-response response-variable-name="existing response variable">
+                    <set-status code="401" reason="SGNL Access Service - API Client Is Not Authorized" />
+                </return-response>
+            </when>
+        </choose>
+        <!-- Check access service resopnse. If Deny, then send a 403 forbidden status code to the caller. If true, APIM allows the request to continue. -->
+        <choose>
+            <when condition="@((string)((IResponse)context.Variables["response"]).Body.As<JObject>()["decisions"][0]["decision"] == "Deny")">
+                <!-- Return 403 Unauthorized -->
+                <return-response response-variable-name="existing response variable">
+                    <set-status code="403" reason="SGNL Access Service - Not Authorized" />
+                </return-response>
+            </when>
+        </choose>
+        <choose>
+            <when condition="@((string)((IResponse)context.Variables["response"]).Body.As<JObject>()["decisions"][1]["decision"] == "Deny")">
+                <!-- Return 403 Unauthorized -->
+                <return-response response-variable-name="existing response variable">
+                    <set-status code="403" reason="SGNL Access Service - Not Authorized" />
+                </return-response>
+            </when>
+        </choose>
+        <base />
+    </inbound>
