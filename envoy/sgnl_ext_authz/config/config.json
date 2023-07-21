@@ -1,0 +1,13 @@
+{
+	"service": {
+		"tokens": {
+			"sgnl_token": "Bearer eyJkYXRhIjoiR0V2YUdtQjFmVEtJaGhNcEZqd3hmSUJnODBiM2VtVmI2ZDJ3N0dTbE1OZ3BKRkN3ZkhQUGNXbEpidmo0ejRwdXBIRU1vZ0d3QW1RM3JOYUtwKy95ZWc9PSIsImlkIjoiYTgxMTQ4ZDUtMGNiMy00ZmQ1LTk2ZWMtMGM2YzA0Y2U1MmJiIiwiaW50ZWdyYXRpb25JZCI6ImUxNjQ4Y2ViLTIwOTktNDZjZC1hMjc0LTJhNzhhMjYzODNkZSIsInRlbmFudElkIjoiNzU1MDY0OTItYjZhYi00M2Q0LWFmZGItNWE1MTQ1MTI4YTVhIn0="
+		},
+		"base_config": {
+			"sgnl_url": "https://access.sgnlapis.cloud/access/v1/evaluations",
+			"service_port": 8223,
+			"log_level": "Info"
+		}
+	}
+}
+
