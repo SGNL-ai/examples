@@ -1,0 +1,6 @@
+{
+	"url": "https://access.sgnlapis.cloud/access/v1/evaluations",
+	"token":"Authorization:Bearer {insert integration token}"
+
+}
+
