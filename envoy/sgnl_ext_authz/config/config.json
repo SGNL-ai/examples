@@ -4,7 +4,7 @@
 			"sgnl_token": "Bearer {{insert your token here}}"
 		},
 		"base_config": {
-			"sgnl_url": "{{insert your SGNL URL.}}",
+			"sgnl_url": "{{SGNL Access API Endpoint}}",
 			"service_port": 8223,
 			"log_level": "Info"
 		}
