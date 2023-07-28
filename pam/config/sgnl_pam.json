@@ -1,5 +1,5 @@
 {
-	"url": "{{insert SGNL URL}}",
+	"url": "{{SGNL Access API Endpoint}}",
 	"token":"Authorization:Bearer {insert integration token}"
 
 }
