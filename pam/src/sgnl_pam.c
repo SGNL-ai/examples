@@ -1,8 +1,5 @@
 /**
  * C code for an example SGNL PAM module.
- * Author: Aldo Pietropaolo
- * Last Update: 4-4-2023
- *
  * Src: sgnl_pam.c
  */
 
