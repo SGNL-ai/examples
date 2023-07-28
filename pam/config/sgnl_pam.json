@@ -1,5 +1,5 @@
 {
-	"url": "https://access.sgnlapis.cloud/access/v1/evaluations",
+	"url": "{{SGNL Access API Endpoint}}",
 	"token":"Authorization:Bearer {insert integration token}"
 
 }
