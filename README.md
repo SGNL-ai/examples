@@ -22,3 +22,4 @@ cd ./examples
 * [Integrating SGNL with AWS API Gateway](https://github.com/SGNL-ai/examples/blob/main/aws/lambda/authorizer)
 * [Integrating SGNL with Envoy](https://github.com/SGNL-ai/examples/blob/main/envoy/sgnl_ext_authz)
 * [Integrating SGNL with a Pluggable Authentication Module](https://github.com/SGNL-ai/examples/blob/main/pam)
+* [Integrating SGNL with Auth0](https://github.com/SGNL-ai/examples/blob/main/auth0)
