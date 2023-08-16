@@ -36,7 +36,7 @@ exports.onExecutePostLogin = async (event, api) => {
     api.access.deny(`SGNL Authorization: Access to ${event.client.name} is not allowed.`);
     api.access.deny
   } else {
-    //All good.
+    // Success
   }
    // uncomment for debug purposes
     console.log(response);
