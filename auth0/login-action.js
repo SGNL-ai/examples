@@ -15,8 +15,8 @@ exports.onExecutePostLogin = async (event, api) => {
   headers: {'Authorization': event.secrets.Token}
   });
 
-  // Output requested resource to log for debug
-  console.log("URI: " + event.request.query.redirect_uri)
+  // Uncomment the line below to output requested resource to the Auth0 debug log
+  // console.log("URI: " + event.request.query.redirect_uri)
 
   // Call SGNL access service API
   await sgnl_api.post( event.secrets.sgnl_url,{
