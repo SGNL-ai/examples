@@ -7,7 +7,7 @@
 exports.onExecutePostLogin = async (event, api) => {
   const axios = require('axios');
   
-  //Create an instance of Axios HTTP client
+  // Create an instance of Axios HTTP client
 
   const sgnl_api = axios.create({
   baseURL: event.secrets.sgnl_url,
