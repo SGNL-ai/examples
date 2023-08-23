@@ -192,7 +192,7 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
     }
 
 
-    // Class definition for the entire request JSON sent to the SGNL access service api.
+    // Class definition for the entire request JSON sent to the SGNL Access Service.
 
      public class SGNLRequest
     {
