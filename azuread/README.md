@@ -18,7 +18,7 @@ This example uses Custom Authentication Extension in Entra Id (formerly Azure AD
 See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
 
 
-## Steps For Configuring the custom authentication extension.
+## Steps For Configuring the Custom Authentication Extension
 
 
 1. Clone the SGNL examples repo using Git from https://github.com/SGNL-ai/examples.git.
@@ -27,7 +27,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
 4. Replace the default C# script in the example in step 3, with the run.csx C# code from the SGNL examples repository.
 
 
-## Steps For Testing The Example
+## Steps For Testing the Example
 
 1. Once your configuration is complete, you can build your login URL for initiating the Azure AD IDP authentication flow. See the example URL below:
    
