@@ -178,7 +178,7 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
         }
     }
 
-    // Class definition for the query sent to the SGNL access service api.
+    // Class definition for the query sent to the SGNL Access Service.
 
     public class Query {
         public string action {get;set;} = "";
