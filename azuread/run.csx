@@ -185,7 +185,7 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
         public string assetId {get;set;} = "";
     }
 
-    // Class definition for the principal sent to the SGNL access service api.
+    // Class definition for the principal sent to the SGNL Access Service.
 
     public class AzurePrincipal {
         public string id {get;set;}="";
