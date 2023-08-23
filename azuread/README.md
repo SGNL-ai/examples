@@ -1,5 +1,5 @@
 # Azure AD / Entra ID App Function HTTP Trigger Example
-This C# script example demonstrates how to call the SGNL Access Service from an Azure App Function HTTP Trigger. This app function and trigger is then configured as part of an custom authentication extension.
+This example uses Custom Authentication Extension in Entra Id (formerly Azure AD) to make a request for an access decision during sign-in to Applications/Services configured in Microsoft Entra. The sample can be run in Azure Functions, is written in C#, and can be modified to support additional configuration and/or metadata that may be configured for your applications.
 
 
 # Prerequisites
