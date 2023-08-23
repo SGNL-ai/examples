@@ -10,7 +10,7 @@ This example uses Custom Authentication Extension in Entra Id (formerly Azure AD
  
 3. You have created policy snippets and policy for evaluation.
  
-4. You have created an protected application to test. You can test with this [example](https://jwt.ms/) provided by Microsoft.
+4. You have created an Entra ID Application to test. You can test with this [example](https://jwt.ms/) provided by Microsoft.
  
 5. You will need Git to clone the example repository. You can follow the steps to install Git [here](https://github.com/git-guides/install-git).
 
