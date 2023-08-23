@@ -22,7 +22,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
 
 
 1. Clone the SGNL examples repo using Git from https://github.com/SGNL-ai/examples.git.
-2. Login to your Azure portal.
+2. Login to the Azure portal.
 3. Follow the steps found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/custom-extension-get-started?tabs=azure-portal%2Chttp).
 4. Replace the default C# script in the example in step 3, with the run.csx C# code from the SGNL examples repository.
 
