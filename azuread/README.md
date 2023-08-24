@@ -29,9 +29,13 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
 
 ## Steps For Testing the Example
 
-1. Once your configuration is complete, you can build your login URL for initiating the Azure AD IDP authentication flow. See the example URL below:
+You can choose one of two options for testing a custom authentication extension. The first option is your own custom OAuth 2/OIDC appplication and the second option is a pre-integrated SaaS enterprise application such as [Smartsheets](https://www.smartsheet.com/).
+
+**Option (1):** Once your custom application configuration is complete and you have completed the configuration of the custom claims provider (see step 4 in [this article](https://learn.microsoft.com/en-us/azure/active-directory/develop/custom-extension-get-started?tabs=azure-portal%2Chttp), you can build your login URL for initiating the Azure AD IDP authentication flow. See the example URL below:
    
-    `` https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/authorize?client_id={App_Client_ID}&response_type=id_token&redirect_uri=https://jwt.ms&scope=openid&state=12345&nonce=12345``
+    https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/authorize?client_id={App_Client_ID}&response_type=id_token&redirect_uri=https://jwt.ms&scope=openid&state=12345&nonce=12345 
+
+**Option 2:** Follow [these steps](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-oidc-sso) to add an OAuth 2/OpenID connect application. This example uses Smartsheets but you may use any other OAuth 2/OpenID Connect compliant application in the Azure AD Gallery. After you add the application, ensure you configure the custom claims provider as in step 4 in [this article](https://learn.microsoft.com/en-us/azure/active-directory/develop/custom-extension-get-started?tabs=azure-portal%2Chttp). Be sure to navigate to your Enterprise Applications view, select the application, and select **Single Sign On** under the **Manage** menu item. You can then edit the attributes and claims configuration to include the custom claims provider implemented by the custom authentication extension. 
 
 
 ## Congratulations
