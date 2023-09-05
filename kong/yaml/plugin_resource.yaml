@@ -1,0 +1,8 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: sgnlplugin
+config:
+  request_header: "SGNL-Plugin-Request-Header"
+  response_header: "SGNL-Response-Header"
+plugin: sgnlplugin 
