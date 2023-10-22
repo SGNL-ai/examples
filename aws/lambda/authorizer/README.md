@@ -21,7 +21,7 @@ This AWS Lambda authorizer example demonstrates how to call the SGNL Access Serv
 9. Finally, you will need an API testing tool such as [Postman](https://www.postman.com/). 
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Running The Example

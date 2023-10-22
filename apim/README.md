@@ -22,7 +22,7 @@ This example shows you how to get the request context variables and JSON key/val
 8. Finally, you will need an API testing tool such as [Postman](https://www.postman.com/). 
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Running The Example

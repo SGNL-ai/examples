@@ -22,7 +22,7 @@ This is a Kong API Gateway plugin implemented in LUA, which calls the SGNL acces
 
 9. Ensure you have kubectl installed and you can manage the minikube cluster. Please visit [this guide](https://minikube.sigs.k8s.io/docs/handbook/kubectl/) to ensure you have a working kubectl configuration.
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Creating The Demo Environment
