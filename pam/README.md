@@ -39,7 +39,7 @@ This is a security module that provides just in time access management for Linux
 6. You will need Git to clone the example repository. You can follow the steps to install Git [here](https://github.com/git-guides/install-git).
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Config File

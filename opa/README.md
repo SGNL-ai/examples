@@ -16,7 +16,7 @@ This Go example demonstrates how to call the SGNL Access Service from an OPA Reg
 6. You will need Git to clone the example repository. You can follow the steps to install Git [here](https://github.com/git-guides/install-git).
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Rego File
