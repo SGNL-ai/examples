@@ -1,0 +1,27 @@
+{
+  "condition": {
+    "predicate": {
+      "lhs": {
+        "attributeId": "2042c5dc-70da-4d95-a0f7-d86599e34844",
+        "nodeName": "Record"
+      },
+      "op": "EqualTo",
+      "rhs": {
+        "queryFieldName": "principalId"
+      }
+    }
+  },
+  "createdAt": "2023-10-16T19:35:46.074001844Z",
+  "createdBy": "b6aa71a6-5613-4748-aa85-995f7294bce3",
+  "description": "",
+  "id": "c5beec0e-009a-4e00-a762-e469716a620e",
+  "nodes": [
+    {
+      "entityId": "ee8ef18e-fed3-49f0-9984-d5cd09f5a9f3",
+      "nodeName": "Record",
+      "queryFieldName": "assetId"
+    }
+  ],
+  "snippetId": "704e2ce0-d8ce-468b-b98b-f35563711648",
+  "version": 3
+}

@@ -17,7 +17,12 @@ local schema = {
           { response_header = typedefs.header_name {
               required = false,
               default = "SGNL-Bye-World" } },
-          { sgnl_token = { type = "string", required = true } }
+          { sgnl_token = { type = "string", required = true, default = "none" } },
+          { client_id = { type = "string", required = true, default = "none" } },
+          { client_secret = { type = "string", required = true, default = "none" } },
+          {introspect_token = { type = "boolean", required = true, default = false } },
+          {introspection_endpoint = { type = "string", required = true, default = "none" } },
+          {sgnl_endpoint = { type = "string", required = true, default = "https://access.sgnlapis.cloud" } }
         },
         entity_checks = {
           -- add some validation rules across fields

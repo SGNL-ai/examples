@@ -42,7 +42,7 @@
         method = "POST",
         path = "/access/v2/evaluations",
         headers = {
-          ["Authorization"] = "Bearer {bearer token}",
+          ["Authorization"] = "Bearer "..plugin_conf.sgnl_token,
           ["Content-Type"] = "application/json"
         },
         body = json_text
