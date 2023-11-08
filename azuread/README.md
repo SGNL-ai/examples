@@ -15,7 +15,7 @@ This example uses Custom Authentication Extension in Entra Id (formerly Azure AD
 5. You will need Git to clone the example repository. You can follow the steps to install Git [here](https://github.com/git-guides/install-git).
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Configuring the Custom Authentication Extension
