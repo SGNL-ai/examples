@@ -23,7 +23,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
 
 ## Quickstart
 
-1. Pull down the git repo `git clone https://github.com/AldoSGNL/curity-sgnl-kong.git`
+1. Clone the git repo `git clone https://github.com/AldoSGNL/curity-sgnl-kong.git`
    
 2. Configure the SGNL plugin by navigating under the kong-image/configuration directory and editing the kong.yml file.
    1. Update the **sgnl_token** value with the SGNL-protected system token you created as part of configuring your SGNL client. Reach out to the SGNL representative if you need assistance.
