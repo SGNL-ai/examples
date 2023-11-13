@@ -2,7 +2,7 @@
   "condition": {
     "predicate": {
       "lhs": {
-        "attributeId": "60da492f-bb33-4bed-b7ce-0f27aa6a9bee",
+        "attributeId": "{{attribute id}}",
         "nodeName": "Patient"
       },
       "op": "RegexEqualTo",
@@ -17,7 +17,7 @@
   "id": "febb6b7b-8aba-4c4b-8edb-7eb68be4dc88",
   "nodes": [
     {
-      "entityId": "0996cf84-aecb-49f4-b54a-03afaef4fe78",
+      "entityId": "{{entity id}}",
       "nodeName": "Patient",
       "queryFieldName": "principalId"
     }
