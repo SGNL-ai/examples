@@ -15,7 +15,7 @@ To begin, you need an SGNL client. If you do not have an SGNL client, please req
  
 3. You have created policy snippets and access policy for evaluation. You can refer to the SGNL policy snippets under the **sgnl_policy** directory. Contact your SGNL representative for assistance with policy setup.
  
-4. You have created an SGNL-protected system to test.
+4. You have created a SGNL Protected System to test.
    
 5. You will need to [install docker](https://docs.docker.com/engine/install/) on your system.
  
