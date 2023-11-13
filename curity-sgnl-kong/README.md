@@ -17,7 +17,7 @@ To begin, you need an SGNL client. If you do not have an SGNL client, please req
  
 4. You have created a SGNL Protected System to test.
    
-5. You will need to [install docker](https://docs.docker.com/engine/install/) on your system.
+5. You have [installed docker](https://docs.docker.com/engine/install/) on your system.
  
 See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
 
