@@ -1,4 +1,5 @@
-# The SGNL, Curity Identity Server, and Kong Demo
+# The SGNL, Curity Identity Server, and Kong Demo Setup
+**Note:** This is a sample demonstration setup and it is NOT to be used for production use. 
 
 This is a containerized demo environment with a patient records API that is proxied by the [Kong](https://konghq.com/) API Gateway and protected by the Curity Identity Server and [SGNL](https://www.sgnl.ai). Kong acts as an enforcement point and will enforce coarse-grained authorization through the [Curity Phantom Token Plugin](https://github.com/curityio/kong-phantom-token-plugin) and fine-grained authorization using the [SGNL Kong Plugin](https://github.com/SGNL-ai/examples/tree/main/curity-sgnl-kong). When the Kong configuration for the SGNL Kong Plugin is set to introspect the access token, the SGNL Kong plugin extracts the Curity access token from the request, introspects it, extracts the subject, and authorizes it against the SGNL policy engine. If the configuration is to extract the subject from the Curity phantom token, then the SGNL Kong Plugin simply loads the pre-validated access token JWT and extracts the subject (e.g. Alice) for authorization.
 
@@ -6,7 +7,7 @@ This is a containerized demo environment with a patient records API that is prox
 This demonstration showcases a patient record use case. In healthcare organizations, It is common for patients to have access to their own patient records. For example, if Alice attempts to access Bob’s patient data, she should be denied. This demo implementation includes a sample patient records API. This API is then protected by the Curity Identity Server, SGNL, and Kong. Curity authenticates the user and generates appropriate access tokens. The Kong gateway’s plugins intercept the request for the record data and orchestrates the validation of the identity in the request and enforce fine-grained access through the SGNL Kong plugin.
 
 ## Documentation
-The overall solution approach is documented and described in the [SGNL Blog](https://sgnl.ai/2023/10/authorization-for-curity-protected-apis/) article on the SGNL website. To learn more about Curity.io  visit the [phantom token approach](https://curity.io/resources/learn/phantom-token-pattern/) post on the Curity.io website.
+The overall solution approach is documented and described in the [SGNL Blog](https://sgnl.ai/2023/10/authorization-for-curity-protected-apis/) article on the SGNL website. To learn more about Curity.io  visit the [phantom token approach](https://curity.io/resources/learn/phantom-token-pattern/) post on the Curity.io website. See [this article](https://curity.io/docs/idsvr/latest/token-service-admin-guide/clients.html) to learn more about OAuth clients.
 
 ## Prerequisites
 To begin, you need an SGNL client. If you do not have an SGNL client, please request one [here](https://sgnl.ai/demo/index.html).
@@ -27,7 +28,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
    
 2. Configure the SGNL plugin by navigating under the kong-image/configuration directory and editing the kong.yml file.
    1. Update the **sgnl_token** value with the SGNL-protected system token you created as part of configuring your SGNL client. Reach out to the SGNL representative if you need assistance.
-   2. Update the **client_id** and **client_secret** if you created your own OAuth client in the Curity Identity Server. If not, the defaults are ok.
+   2. Update the **client_id** and **client_secret**. The client id and secret should be set using the Curity console. See [this article](https://curity.io/docs/idsvr/latest/token-service-admin-guide/clients.html) to learn more about OAuth clients.
    3. Update the value of **introspect_token**. If this value is **true**, the SGNL plugin will call the Curity Identity Server introspection endpoint to validate the access token. If the value is **false**, then the SGNL plugin will simply rely only on the Curity Phantom Plugin to validate the JWT and simply extract the subject from the pre-validated JWT.
    4. The introspection_endpoint and sgnl_endpoint do not need to be changed.
    
