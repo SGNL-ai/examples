@@ -13,7 +13,7 @@ services:
     config:
       introspection_endpoint: https://sgnl-kong-tutorial-idsvr:8443/oauth/v2/oauth-introspect
       client_id: gateway-client
-      client_secret: Password1
+      client_secret: {insert new secret here. Refer to Readme.md for instructions.}
       token_cache_seconds: 900
       scope: openid
       verify_ssl: false
@@ -23,7 +23,7 @@ services:
       response_header: sgnl_response_header
       sgnl_token: {{insert SGNL protected system token}}
       client_id: gateway-client
-      client_secret: Password1
+      client_secret: {insert new secret here. Refer to Readme.md for instructions.}
       introspect_token: false
       introspection_endpoint: https://sgnl-kong-tutorial-idsvr:8443/oauth/v2/oauth-introspect
       sgnl_endpoint: https://access.sgnlapis.cloud
