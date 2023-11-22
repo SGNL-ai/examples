@@ -19,7 +19,7 @@ This Envoy external authorization service is a gRPC server which accepts an auth
 8. Finally, you will need an API testing tool such as [Postman](https://www.postman.com/). 
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Running The Example

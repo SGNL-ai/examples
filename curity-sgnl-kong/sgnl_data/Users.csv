@@ -1,0 +1,4 @@
+region,user_id,email
+USA,Alice,alice@example.com
+Canada,Bob,bob@example.com
+Canada,David,david@example.com

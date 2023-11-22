@@ -21,7 +21,7 @@ This AWS Lambda authorizer example demonstrates how to call the SGNL Access Serv
 9. Finally, you will need an API testing tool such as [Postman](https://www.postman.com/). 
 
 
-See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sources and policies.
+See our [Help Guides](https://help.sgnl.ai) for steps on configuring data sources and policies.
 
 
 ## Steps For Running The Example
@@ -45,7 +45,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
    
    ```zip sgnlAuthorizer.zip sgnlAuthorizer```
 
-6. Create the SGNL Lambda authorizer function. You can follow these [steps](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html#api-gateway-lambda-authorizer-lambda-function-create)] to create an authorizer. Take care to call the function "sgnlAuthorizer". Ensure you are using the Go 1.x runtime, and you have selected "x86_64 for the chip architecture. You can find these settings in the "Runtime Settings" section.
+6. Create the SGNL Lambda authorizer function. You can follow these [steps](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html#api-gateway-lambda-authorizer-lambda-function-create) to create an authorizer. Take care to call the function "sgnlAuthorizer". Ensure you are using the Go 1.x runtime, your handler name is set to "sgnlAuthorizer" and you have selected "x86_64" for the chip architecture. You can find these settings in the "Runtime Settings" section.
 
 7. Once the function is created, click on the "Code" tab, and select the "Upload from" drop down. Choose your zip file with the compiled authorizer and upload it.
 
@@ -53,9 +53,9 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
 
 9. Replace the event JSON with the contents of the example event in the test_event.json file. This file is located under the test directory.
 
-10. Click on the "Configuration" tab and create a new environment variable named "token". Once created, set the value to the SGNL integration bearer token.
+10. Click on the "Configuration" tab and create a new environment variable named "token". Once created, set the value to the SGNL integration bearer token. Be sure to include the Bearer prefix (i.e. your token value should be "Bearer {SGNL Integration Token}").
 
-11. In the same configuration section, create a new environment variable named "sgnl_url". Set the value to the SGNL access service URL.
+11. In the same configuration section, create a new environment variable named "sgnl_url". Set the value to the [SGNL Access Service URL for Access Evaluation](https://developer.sgnl.ai/#sgnl-public-api).
 
 12. Click on the "Test" tab and click on the "Test" button. You should receive a successful execution result with the authorization decision from the SGNL access service. It will look like this:
 
@@ -108,8 +108,7 @@ See our [Help Guides](https://support.sgnl.ai) for steps on configuring data sou
     "principal": {
         "id": "{Replace with your principal id.}"
     }
-  }
-  
+   }
 4. Send the request.
 
 ## Lambda Authorizer Trigger Notes
