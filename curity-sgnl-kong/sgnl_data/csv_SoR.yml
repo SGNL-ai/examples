@@ -1,0 +1,64 @@
+# CSV configuration YAML for DS2.0
+displayName: "Patient CSV Data Source"
+icon: | 
+  PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPgo8c3ZnIHdpZHRoPSI4MDBweCIgaGVpZ2h0PSI4MDBweCIgdmlld0JveD0iMCAwIDI0IDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNS4yOSAxSDN2MTFoMVYyaDEwdjZoNnYxNEg0di0zSDN2NGgxOFY2LjcwOXpNMjAgN2gtNVYyaC4yTDIwIDYuOHptLTQuOTYgMTFsMi4xMjYtNUgxNi4wOGwtMS41NjggMy42ODhMMTIuOTY2IDEzaC0xLjA4NGwyLjA5NSA1ek03IDE0LjM0OXYuMzAyQTEuMzUgMS4zNSAwIDAgMCA4LjM0OSAxNkg5LjY1YS4zNDkuMzQ5IDAgMCAxIC4zNDkuMzQ5di4zMDJBLjM0OS4zNDkgMCAwIDEgOS42NSAxN0g3djFoMi42NTFBMS4zNSAxLjM1IDAgMCAwIDExIDE2LjY1MXYtLjMwMkExLjM1IDEuMzUgMCAwIDAgOS42NTEgMTVIOC4zNWEuMzQ5LjM0OSAwIDAgMS0uMzUtLjM0OXYtLjMwMkEuMzQ5LjM0OSAwIDAgMSA4LjM0OSAxNEgxMXYtMUg4LjM0OUExLjM1IDEuMzUgMCAwIDAgNyAxNC4zNDl6bS01IC42OTJ2LjkxOEEyLjA0NCAyLjA0NCAwIDAgMCA0LjA0MSAxOEg2di0xSDQuMDQxQTEuMDQyIDEuMDQyIDAgMCAxIDMgMTUuOTU5di0uOTE4QTEuMDQyIDEuMDQyIDAgMCAxIDQuMDQxIDE0SDZ2LTFINC4wNDFBMi4wNDQgMi4wNDQgMCAwIDAgMiAxNS4wNDF6Ii8+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiIvPjwvc3ZnPg==
+address: "none-local csv"
+defaultSyncFrequency: SECONDLY
+defaultSyncMinInterval: 1
+defaultApiCallFrequency: SECONDLY
+defaultApiCallMinInterval: 1
+adapter:
+  hostname: ec2-34-234-203-55.compute-1.amazonaws.com
+  port: 5001
+  config: "e30="
+  apiVersion: "V1"
+  disableTls: true
+  auth:
+    - basic:
+        user: "dummy"
+        password: "dummy"
+entities:
+  User:
+    displayName: User
+    externalId: User
+    description: User Entity in csv file.
+    syncFrequency: SECONDLY
+    syncMinInterval: 1
+    apiCallFrequency: SECONDLY
+    apiCallMinInterval: 1
+    pageSize: 10
+    pagesOrderedById: false
+    attributes:
+      - name: user_id
+        externalId: user_id
+        description: Unique ID of the user
+        type: String
+        indexed: true
+        uniqueId: true
+      - name: email
+        externalId: email
+        type: String
+      - name: region
+        externalId: region
+        type: String
+  Record:
+    description: "Patient record authorization meta-data."
+    displayName: Record
+    externalId: Record
+    syncFrequency: SECONDLY
+    syncMinInterval: 1
+    apiCallFrequency: SECONDLY
+    apiCallMinInterval: 1
+    pageSize: 10
+    pagesOrderedById: false
+    attributes:
+      - name: id
+        externalId: id
+        type: String
+        indexed: true
+        uniqueId: true
+      - name: patient
+        externalId: patient
+        type: String
+
+ 

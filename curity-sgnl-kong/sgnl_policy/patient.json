@@ -1,0 +1,27 @@
+{
+  "condition": {
+    "predicate": {
+      "lhs": {
+        "attributeId": "{{attribute id}}",
+        "nodeName": "Patient"
+      },
+      "op": "RegexEqualTo",
+      "rhs": {
+        "string": ".*"
+      }
+    }
+  },
+  "createdAt": "2023-10-16T18:41:27.362896336Z",
+  "createdBy": "b6aa71a6-5613-4748-aa85-995f7294bce3",
+  "description": "",
+  "id": "febb6b7b-8aba-4c4b-8edb-7eb68be4dc88",
+  "nodes": [
+    {
+      "entityId": "{{entity id}}",
+      "nodeName": "Patient",
+      "queryFieldName": "principalId"
+    }
+  ],
+  "snippetId": "8cdf3cc3-3e07-42c4-94e2-7138f0ebca50",
+  "version": 1
+}

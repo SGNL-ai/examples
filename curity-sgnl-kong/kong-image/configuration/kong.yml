@@ -1,0 +1,29 @@
+_format_version: '2.1'
+_transform: true
+
+services:
+- name: api
+  url: http://sgnl-kong-tutorial-api:8080/api/records
+  routes:
+  - name: api-route
+    paths:
+    - /records
+  plugins:
+  - name: phantom-token
+    config:
+      introspection_endpoint: https://sgnl-kong-tutorial-idsvr:8443/oauth/v2/oauth-introspect
+      client_id: gateway-client
+      client_secret: {insert new secret here. Refer to Readme.md for instructions.}
+      token_cache_seconds: 900
+      scope: openid
+      verify_ssl: false
+  - name: sgnlplugin
+    config:
+      request_header: sgnl_req_header
+      response_header: sgnl_response_header
+      sgnl_token: {{insert SGNL protected system token}}
+      client_id: gateway-client
+      client_secret: {insert new secret here. Refer to Readme.md for instructions.}
+      introspect_token: false
+      introspection_endpoint: https://sgnl-kong-tutorial-idsvr:8443/oauth/v2/oauth-introspect
+      sgnl_endpoint: https://access.sgnlapis.cloud
