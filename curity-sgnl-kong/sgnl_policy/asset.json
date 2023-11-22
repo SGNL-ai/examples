@@ -1,0 +1,19 @@
+{
+  "condition": {
+    "predicate": {
+      "lhs": {
+        "queryFieldName": "assetId"
+      },
+      "op": "RegexEqualTo",
+      "rhs": {
+        "string": ".*"
+      }
+    }
+  },
+  "createdAt": "2023-10-16T18:59:38.841851529Z",
+  "createdBy": "b6aa71a6-5613-4748-aa85-995f7294bce3",
+  "description": "",
+  "id": "76743342-c5a8-4f81-b5d7-139bf3f03a36",
+  "snippetId": "ad148cd8-616c-4954-9e37-6dd9bc71d014",
+  "version": 2
+}

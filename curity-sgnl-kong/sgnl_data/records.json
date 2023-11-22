@@ -1,0 +1,26 @@
+[
+    {
+        "id": 0,
+        "patient": "Alice"
+    },
+    {
+        "id": 1,
+        "patient": "Bob"
+    },
+    {
+        "id": 2,
+        "patient": "Alice"
+    },
+    {
+        "id": 3,
+        "patient": "Bob"
+    },
+    {
+        "id": 4,
+        "patient": "David"
+    },
+    {
+        "id": 5,
+        "patient": "David"
+    }
+]
