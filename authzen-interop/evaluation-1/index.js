@@ -83,8 +83,9 @@ functions.http('helloHttp', (req, res) => {
 
     resp.on("end", function () {
       const body = Buffer.concat(chunks);
-      if (typeof body === 'object' && 'decisions' in body) {
-        const decisions = body.decisions;
+      const jsonBody = JSON.parse(body.toString());
+      if (typeof jsonBody === 'object' && 'decisions' in jsonBody) {
+        const decisions = jsonBody.decisions;
         if (decisions.length > 0) {
           const decision = decisions[0];
           if ('decision' in decision) {
@@ -92,21 +93,32 @@ functions.http('helloHttp', (req, res) => {
               console.log('Access granted');
               res.statusCode = 200;
               res.send("{\"decision\": \"true\"}");
+              return;
             } else {
               console.log('Access denied');
               res.statusCode = 200;
               res.send("{\"decision\": \"false\"}");
+              return;
             }
           } else {
             console.error('Error: "decision" field not found in decision');
             res.statusCode = 500;
+            res.send('Error: "decision" field not found in decision');
+            return;
           }
         } else {
           console.error('Error: No decisions found in response');
           res.statusCode = 500;
+          res.send('Error: No decisions found in response');
+          return;
         }
+      } else {
+        console.error('Error: Decisions not found in response');
+        console.log(body.toString());
+        res.statusCode = 500;
+        res.send('Error making request to SGNL Access API');
+        return;
       }
-      console.log(body.toString());
     });
   });
 
@@ -116,6 +128,11 @@ functions.http('helloHttp', (req, res) => {
     },
     queries: [{action: action, assetId: assetId}]
   }));
+  reqs.on('error', function (error) {
+    console.error('Error making request:', error.message);
+    res.statusCode = 500;
+    res.send('Error making request');
+  });
   reqs.end();
 });
 
