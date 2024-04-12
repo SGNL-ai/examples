@@ -3,6 +3,22 @@ const functions = require('@google-cloud/functions-framework');
 functions.http('helloHttp', (req, res) => {
   const https = require("https");
 
+  // Check if request has a content-type header indicating JSON
+  if (!req.headers['content-type'] || !req.headers['content-type'].includes('application/json')) {
+    console.error('Error: Invalid request. Body needs to be of type application/json');
+    res.statusCode = 400;
+    res.send('Error: Invalid request. Body needs to be of type application/json');
+    return;
+  }
+
+  if (!req.headers['authorization'] || !req.headers['authorization'].startsWith('Bearer ')) { 
+    console.error('Error: Authorization header not found');
+    res.statusCode = 401;
+    res.send('Error: Authorization header not found');
+    return;
+  }
+  const bearerToken = req.headers['authorization'].split(' ')[1];
+
   const options = {
     "method": "POST",
     "hostname": "access.sgnlapis.cloud",
@@ -13,14 +29,10 @@ functions.http('helloHttp', (req, res) => {
       "Accept": "application/json",
       "X-Request-Id": "bfe9eb29-ab87-4ca3-be83-a1d5d8305716",
       "Accept-Language": "en, en-US;q=0.8, es;q=0.7",
-      "Authorization": "Bearer " + process.env.authzen_token
+      "Authorization": "Bearer " + bearerToken
     }
   };
 
-  // Check if request has a content-type header indicating JSON
-  if (!req.headers['content-type'] || !req.headers['content-type'].includes('application/json')) {
-    return null;
-  }
   
   subject = getSubjectFromJsonBody(req.body);
   if (subject === null) {
