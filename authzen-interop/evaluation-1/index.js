@@ -69,6 +69,7 @@ functions.http('helloHttp', (req, res) => {
     assetId = userId;
   } else {
     // action relates to "todo", and not user
+    
     if (resourceType != 'todo') {
       console.error("Unknown resource type: " + resourceType);
       res.send("Unknown resource type: " + resourceType);
