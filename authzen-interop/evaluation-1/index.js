@@ -105,12 +105,12 @@ functions.http('helloHttp', (req, res) => {
             if (decision.decision == 'Allow') {
               console.log('Access granted');
               res.statusCode = 200;
-              res.send("{\"decision\": \"true\"}");
+              res.send("{\"decision\": true}");
               return;
             } else {
               console.log('Access denied');
               res.statusCode = 200;
-              res.send("{\"decision\": \"false\"}");
+              res.send("{\"decision\": false}");
               return;
             }
           } else {
