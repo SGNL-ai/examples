@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
     /* Set headers to send to the SGNL API. */
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "Authorization:Bearer eyJkYXRhIjoibFdHbHVvV3gzRllmYVlZSXdLMmdTemhNSkRDbkFSb0pmSUJWVDZLMGZFRkxQbUJ5T3lXd3pSUjZPdGRQdHhwOHNlUjZyK2Q5MkVzT1dxQUFVMkJhTmc9PSIsImlkIjoiZjlmNWY2YzktMWJmOS00YzkwLTg0OWEtMjJiZTYxMGU0NzA1IiwiaW50ZWdyYXRpb25JZCI6IjY5ZTE5NThmLTQ5N2EtNDY5Ni1hYjBiLWVlNTY1ZTEwNmI1ZSIsInRlbmFudElkIjoiNzU1MDY0OTItYjZhYi00M2Q0LWFmZGItNWE1MTQ1MTI4YTVhIn0=");
+    headers = curl_slist_append(headers, "Authorization:Bearer {bearer token}");
 
     /* Create the json objects for the post. */
     json = json_object_new_object();
