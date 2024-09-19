@@ -7,7 +7,7 @@ require (
 	github.com/gogo/googleapis v1.4.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/viper v1.15.0
-	golang.org/x/net v0.9.0
+	golang.org/x/net v0.23.0
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1
 	google.golang.org/grpc v1.56.3
 )
