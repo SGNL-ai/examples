@@ -154,8 +154,8 @@ function getSubjectFromJsonBody(body) {
     // Check if the parsed body is an object and has the "subject" field
     if (typeof body === 'object' && 'subject' in body) {
       const subject = body.subject;
-      if ('identity' in subject) {
-        return subject.identity;
+      if ('id' in subject) {
+        return subject.id;
       } else {
         console.error('Error getting subject from request body: "identity" field not found');
         return null;
@@ -220,8 +220,8 @@ function getResourceOwnerIDFromJsonBody(body) {
     // Check if the parsed body is an object and has the "resource" field
     if (typeof body === 'object' && 'resource' in body) {
       const resource = body.resource;
-      if ('ownerID' in resource) {
-        return resource.ownerID;
+      if ('properties' in resource && 'ownerID' in resource.properties) {
+        return resource.properties.ownerID;
       } else {
         return null;
       }
@@ -240,8 +240,8 @@ function getResourceUserIDFromJsonBody(body) {
     // Check if the parsed body is an object and has the "resource" field
     if (typeof body === 'object' && 'resource' in body) {
       const resource = body.resource;
-      if ('userID' in resource) {
-        return resource.userID;
+      if ('id' in resource) {
+        return resource.id;
       } else {
         return null;
       }
