@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "27a41b39-8c33-4960-8a78-88e104dfbd22",
+		"_postman_id": "5cd5a208-7ba9-48b4-bfc9-d7d77e8cd758",
 		"name": "AuthZEN 1.1 Preview",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26208249"
 	},
 	"item": [
 		{
-			"name": "update-todo Copy",
+			"name": "update-todo",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -27,12 +27,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
 						"evaluation"
@@ -42,13 +40,13 @@
 			"response": []
 		},
 		{
-			"name": "can_update_todos Copy",
+			"name": "can_update_todos",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"subject\": {\n    \"type\": \"user\",\n    \"id\": \"CiRmZDE2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n  },\n  \"action\": {\n    \"name\": \"can_update_todos\"\n  },\n  \"resource\": {\n  },\n  \"context\": {\n  },\n  \"evaluations\": [\n    {\n      \"resource\": {\n        \"type\": \"todo\",\n        \"id\": \"7240d0db-8ff0-41ec-98b2-34a096273b9f\",\n        \"properties\": {\n          \"ownerID\": \"rick@the-citadel.com\"\n        }\n      }\n    },\n    {\n      \"resource\": {\n        \"type\": \"todo\",\n        \"id\": \"7240d0db-8ff0-41ec-98b2-34a096273b9e\",\n        \"properties\": {\n          \"ownerID\": \"morty@the-citadel.com\"\n        }\n      }\n    }\n  ]\n}",
+					"raw": "{\n  \"subject\": {\n    \"type\": \"user\",\n    \"id\": \"CiRmZDE2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n  },\n  \"action\": {\n    \"name\": \"can_update_todo\"\n  },\n  \"resource\": {\n  },\n  \"context\": {\n  },\n  \"evaluations\": [\n    {\n      \"resource\": {\n        \"type\": \"todo\",\n        \"id\": \"7240d0db-8ff0-41ec-98b2-34a096273b9f\",\n        \"properties\": {\n          \"ownerID\": \"rick@the-citadel.com\"\n        }\n      }\n    },\n    {\n      \"resource\": {\n        \"type\": \"todo\",\n        \"id\": \"7240d0db-8ff0-41ec-98b2-34a096273b9e\",\n        \"properties\": {\n          \"ownerID\": \"morty@the-citadel.com\"\n        }\n      }\n    }\n  ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -56,14 +54,14 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluations",
+					"raw": "https://{{hostName}}/access/v1/evaluations",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
+						"access",
+						"v1",
 						"evaluations"
 					]
 				}
@@ -71,7 +69,7 @@
 			"response": []
 		},
 		{
-			"name": "delete-todo Copy",
+			"name": "delete-todo",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -91,12 +89,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
 						"evaluation"
@@ -106,7 +102,7 @@
 			"response": []
 		},
 		{
-			"name": "create-todo Copy",
+			"name": "create-todo",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -126,14 +122,14 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/access/v1/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
+						"access",
+						"v1",
 						"evaluation"
 					]
 				}
@@ -141,7 +137,7 @@
 			"response": []
 		},
 		{
-			"name": "read-user Copy",
+			"name": "read-user",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -153,7 +149,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"subject\":  {\n       \"identity\" : \"CiRmZDA2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n    },\n    \"action\": {\n        \"name\": \"can_update_todo\"\n    },\n    \"resource\": {\n        \"type\": \"todo\",\n        \"ownerID\": \"morty@the-citadel.com\"\n    }\n}",
+					"raw": "{\n  \"subject\": {\n    \"type\": \"user\",\n    \"id\": \"CiRmZDA2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n  },\n  \"action\": {\n    \"name\": \"can_read_user\"\n  },\n  \"resource\": {\n    \"type\": \"user\",\n    \"id\": \"beth@the-smiths.com\"\n  }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -161,14 +157,14 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/access/v1/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
+						"access",
+						"v1",
 						"evaluation"
 					]
 				}
@@ -176,7 +172,7 @@
 			"response": []
 		},
 		{
-			"name": "read-todos Copy",
+			"name": "read-todos",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -188,7 +184,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"subject\":  {\n       \"identity\" : \"CiRmZDA2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n    },\n    \"action\": {\n        \"name\": \"can_update_todo\"\n    },\n    \"resource\": {\n        \"type\": \"todo\",\n        \"ownerID\": \"morty@the-citadel.com\"\n    }\n}",
+					"raw": "{\n  \"subject\": {\n    \"type\": \"user\",\n    \"id\": \"CiRmZDA2MTRkMy1jMzlhLTQ3ODEtYjdiZC04Yjk2ZjVhNTEwMGQSBWxvY2Fs\"\n  },\n  \"action\": {\n    \"name\": \"can_read_todos\"\n  },\n  \"resource\": {\n    \"type\": \"todo\",\n    \"id\": \"todo-1\"\n  }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -196,14 +192,14 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/access/v1/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
+						"access",
+						"v1",
 						"evaluation"
 					]
 				}
@@ -211,7 +207,7 @@
 			"response": []
 		},
 		{
-			"name": "lb-read-todos Copy",
+			"name": "lb-read-todos",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -231,14 +227,14 @@
 					}
 				},
 				"url": {
-					"raw": "https://us-central1-authzen-api.cloudfunctions.net/evaluation",
+					"raw": "https://{{hostName}}/access/v1/evaluation",
 					"protocol": "https",
 					"host": [
-						"us-central1-authzen-api",
-						"cloudfunctions",
-						"net"
+						"{{hostName}}"
 					],
 					"path": [
+						"access",
+						"v1",
 						"evaluation"
 					]
 				}
@@ -281,7 +277,12 @@
 	"variable": [
 		{
 			"key": "authzToken",
-			"value": "<paste token here>",
+			"value": "eyJkYXRhIjoicm11K2dTRGhpdWtpQ0xGRVErWjhuV1RlUEdKdFU0UXpBWUVQaUR0VFJzNzlLR0xzblJOb3lWU3IxZTFFNHFoQ01mRkNLbHpqWlZhWm9Fd2dFeW5SVkE9PSIsImlkIjoiNThmOTc5Y2QtODZmNS00NzBlLWEwNzUtOWRjMTg5ZTY2NjdiIiwiaW50ZWdyYXRpb25JZCI6IjUxZmY1ZjZmLTgxNjgtNGExNi04Mzk1LTU4YTBmMjA2MjY5OCIsInRlbmFudElkIjoiNmExZGUzNTMtYTA4NS00MjBiLTg4YWYtOWU4ZWYwZTg1NTliIn0=",
+			"type": "string"
+		},
+		{
+			"key": "hostName",
+			"value": "authzen.sgnlapis.cloud",
 			"type": "string"
 		}
 	]
