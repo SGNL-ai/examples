@@ -1,6 +1,6 @@
 module sgnl.opa
 
-go 1.23.8
+go 1.25
 
 require github.com/open-policy-agent/opa v1.4.0
 
