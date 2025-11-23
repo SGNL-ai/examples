@@ -39,8 +39,14 @@ spec:
       labels:
         app: echo
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-      - image: kong/go-echo:latest
+      - image: kong/go-echo:0.3.0
         name: echo
         ports:
         - containerPort: 1027
@@ -61,5 +67,13 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
         resources: {}
 

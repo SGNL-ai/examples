@@ -7,7 +7,7 @@ services:
     - "6749:6749"
     - "8443:8443"
     environment:
-      PASSWORD: Passw0rd1! ##admin user password
+      PASSWORD: ${CURITY_ADMIN_PASSWORD:-CHANGE_ME} ##admin user password
       LOGGING_LEVEL: DEBUG
     networks:
       curity:

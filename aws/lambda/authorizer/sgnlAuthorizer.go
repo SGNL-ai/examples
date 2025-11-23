@@ -12,7 +12,9 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -57,6 +59,69 @@ type Decisions struct {
 	Decision string `json:"decision"`
 }
 
+// validateSgnlURL validates the SGNL URL to prevent SSRF attacks.
+func validateSgnlURL(urlStr string) error {
+	if urlStr == "" {
+		return errors.New("SGNL URL is empty")
+	}
+
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return fmt.Errorf("invalid URL format: %w", err)
+	}
+
+	// Only allow HTTPS
+	if parsedURL.Scheme != "https" {
+		return errors.New("only HTTPS URLs are allowed")
+	}
+
+	// Validate hostname
+	hostname := parsedURL.Hostname()
+	if hostname == "" {
+		return errors.New("URL must have a hostname")
+	}
+
+	// Check if hostname resolves to a private IP
+	ips, err := net.LookupIP(hostname)
+	if err != nil {
+		return fmt.Errorf("failed to resolve hostname: %w", err)
+	}
+
+	for _, ip := range ips {
+		if isPrivateIP(ip) {
+			return errors.New("URL resolves to a private IP address")
+		}
+	}
+
+	return nil
+}
+
+// isPrivateIP checks if an IP address is private/internal.
+func isPrivateIP(ip net.IP) bool {
+	if ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() {
+		return true
+	}
+
+	privateIPBlocks := []string{
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+		"169.254.0.0/16",
+		"::1/128",
+		"fc00::/7",
+		"fe80::/10",
+	}
+
+	for _, block := range privateIPBlocks {
+		_, subnet, _ := net.ParseCIDR(block)
+		if subnet.Contains(ip) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Lambda authorizer handler.
 
 func sgnlAuthorizer(ctx context.Context, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
@@ -69,6 +134,12 @@ func sgnlAuthorizer(ctx context.Context, request events.APIGatewayCustomAuthoriz
 
 	// Get the SGNL Access Service URL from the Lambda environment variables.
 	sgnlUrl := os.Getenv("sgnl_url")
+
+	// Validate SGNL URL to prevent SSRF attacks
+	if err := validateSgnlURL(sgnlUrl); err != nil {
+		log.Printf("SGNL Authorizer: Invalid SGNL URL: %v", err)
+		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("Unauthorized")
+	}
 
 	// Get the principal id from the request. In production implementations it's advisable to get the principal from an encrypted and signed IDP JWT.
 
@@ -125,9 +196,13 @@ func sgnlAuthorizer(ctx context.Context, request events.APIGatewayCustomAuthoriz
 	sgnlReq2, _ := json.Marshal(sgnlReq1)
 
 	log.Println("SGNL Authorizer: SGNL Request:", string(sgnlReq2))
-	// Initialize http client
+	// Initialize http client with redirect prevention
 
-	client := &http.Client{}
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
 
 	// Initialize request
 
