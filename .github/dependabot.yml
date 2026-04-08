@@ -7,6 +7,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "go"
@@ -21,6 +23,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "go"
@@ -35,6 +39,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "go"
@@ -49,6 +55,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "go"
@@ -63,6 +71,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "docker"
@@ -77,6 +87,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "github-actions"
