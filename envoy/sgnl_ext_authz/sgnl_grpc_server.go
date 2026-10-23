@@ -6,11 +6,16 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
+	"time"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -45,12 +50,13 @@ type sgnlResponse struct {
 	PrincipalID        string      `json:"principalId"`
 }
 
+// The SGNL Access Service matches JSON keys case-sensitively ("assetId", not "assetID").
 type Principal struct {
-	Id string `json:"Id"`
+	Id string `json:"id"`
 }
 
 type Queries struct {
-	AssetID string `json:"assetID"`
+	AssetID string `json:"assetId"`
 	Action  string `json:"action"`
 }
 
@@ -60,11 +66,15 @@ type Decisions struct {
 	Decision string `json:"decision"`
 }
 
+const (
+	defaultRequestTimeout  = 3 * time.Second
+	defaultPrincipalHeader = "principal"
+	maxResponseBytes       = 1 << 20
+)
+
 var (
-	sgnl_url             = ""
-	service_bearer_token = ""
-	log_level            = ""
-	sgnl_port_str        = ""
+	log_level     = ""
+	sgnl_port_str = ""
 )
 
 type healthServer struct{}
@@ -81,158 +91,180 @@ func (s *healthServer) Watch(in *healthpb.HealthCheckRequest, srv healthpb.Healt
 	//This function is needed in order to implement the health server functions. Only Check() is implemented in this example.
 }
 
-type sgnlServer struct{}
+type sgnlServer struct {
+	url    string // Full SGNL Access Service evaluations URL.
+	token  string // Complete Authorization header value, including the "Bearer " prefix.
+	client *http.Client
+
+	// Optional overrides for what is sent to SGNL. By default the principal is the value of the
+	// "principal" request header, the asset is the request path (without the query string), and
+	// the action is the HTTP method.
+	principalHeader string // Lowercase name of the request header that carries the principal ID.
+	action          string // Fixed action sent for every request, e.g. "read".
+	assetHeader     string // Lowercase name of a request header that carries the asset ID.
+}
+
+func denyResponse() *auth.CheckResponse {
+	log.Debug("Returning rpc.PERMISSION_DENIED and HTTP Forbidden.")
+
+	return &auth.CheckResponse{
+		Status: &rpcstatus.Status{
+			Code: int32(rpc.PERMISSION_DENIED),
+		},
+		HttpResponse: &auth.CheckResponse_DeniedResponse{
+			DeniedResponse: &auth.DeniedHttpResponse{
+				Status: &envoy_type.HttpStatus{
+					Code: envoy_type.StatusCode_Forbidden,
+				},
+				Body: "SGNL Authorization Result: Denied",
+			},
+		},
+	}
+}
+
+// evaluate asks the SGNL Access Service whether the principal may perform the action on the asset.
+// Anything other than a well-formed decision is returned as an error so that the caller fails closed.
+func (a *sgnlServer) evaluate(ctx context.Context, principal, assetID, action string) (bool, error) {
+	body, err := json.Marshal(sgnlRequest{
+		Principal: Principal{Id: principal},
+		Queries:   []Queries{{AssetID: assetID, Action: action}},
+	})
+	if err != nil {
+		return false, fmt.Errorf("could not marshal the SGNL request: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, a.url, bytes.NewReader(body))
+	if err != nil {
+		return false, fmt.Errorf("could not initialize the SGNL request: %w", err)
+	}
+
+	req.Header.Set("Authorization", a.token)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := a.client.Do(req)
+	if err != nil {
+		return false, fmt.Errorf("request to the SGNL access service failed: %w", err)
+	}
+
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
+	if err != nil {
+		return false, fmt.Errorf("could not read the SGNL response: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return false, fmt.Errorf("SGNL access service returned HTTP %d: %.512s", resp.StatusCode, respBody)
+	}
+
+	var jsonResponse sgnlResponse
+
+	if err := json.Unmarshal(respBody, &jsonResponse); err != nil {
+		return false, fmt.Errorf("could not unmarshal the SGNL response: %w", err)
+	}
+
+	if len(jsonResponse.Decisions) == 0 {
+		return false, errors.New("SGNL response contained no decisions")
+	}
+
+	return jsonResponse.Decisions[0].Decision == "Allow", nil
+}
 
 func (a *sgnlServer) Check(ctx context.Context, req *auth.CheckRequest) (*auth.CheckResponse, error) {
 	log.Println("SGNL Authorization called gRPC Check()")
 
-	b, err := json.MarshalIndent(req.Attributes.Request.Http.Headers, "", "  ")
+	httpReq := req.GetAttributes().GetRequest().GetHttp()
+
+	b, err := json.MarshalIndent(httpReq.GetHeaders(), "", "  ")
 	if err == nil {
 		log.Debug("Inbound Headers: ")
 		log.Debug((string(b)))
 	}
 
-	ct, err := json.MarshalIndent(req.Attributes.ContextExtensions, "", "  ")
+	ct, err := json.MarshalIndent(req.GetAttributes().GetContextExtensions(), "", "  ")
 	if err == nil {
 		log.Debug("Context:")
 		log.Debug((string(ct)))
 	}
 
-	// Get principal from request.
+	// Get principal from request. Envoy lowercases header names.
 
-	principalHeader := req.Attributes.Request.Http.Headers["principal"]
+	principalHeader := a.principalHeader
 
-	// Get URI from request.
+	if principalHeader == "" {
+		principalHeader = defaultPrincipalHeader
+	}
 
-	path := req.Attributes.Request.Http.Path
+	principal := httpReq.GetHeaders()[principalHeader]
 
-	// Get HTTP method from request.
-
-	method := req.Attributes.Request.Http.Method
-
-	if len(principalHeader) > 0 {
-
-		// Construct the SGNL access service query string.
-
-		principalJson := `{"Id":"` + principalHeader + `"}`
-
-		queriesJson := `[{"assetID":"` + path + `","action":"` + method + `"}]`
-
-		// Initialize the query variable as an array of SGNL queries, based on the queries struct.
-		var queries []Queries
-		var principal Principal
-
-		// Unmarshall the query string into the query array struct.
-
-		json.Unmarshal([]byte(queriesJson), &queries)
-
-		// Unmarshall the principal string into the principal struct.
-
-		json.Unmarshal([]byte(principalJson), &principal)
-
-		// Build final JSON request body using the SGNL request struct.
-
-		sgnlReq1 := &sgnlRequest{
-			Principal: principal,
-			Queries:   queries}
-
-		// Finally marshall the JSON into a final request variable containing the JSON request body.
-
-		sgnlReq2, _ := json.Marshal(sgnlReq1)
-
-		// Initialize http client
-
-		client := &http.Client{}
-
-		// Initialize request
-
-		req, err := http.NewRequest("POST", sgnl_url, bytes.NewBuffer(sgnlReq2))
-
-		if err != nil {
-			log.Error("SGNL ERROR: Could not initialize request to the SGNL access service.")
-		}
-
-		// Add headers to request
-
-		req.Header.Add("Authorization", service_bearer_token)
-		req.Header.Add("Content-Type", "application/json")
-
-		// Make the request to the SGNL Access Service API
-		resp, err := client.Do(req)
-
-		if err != nil {
-			log.Error("SGNL ERROR: Error while making the request to SGNL access service, ", err)
-		}
-
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
-
-		var jsonResponse sgnlResponse
-
-		// Unmarshal response into the jsonResponse struct.
-
-		json.Unmarshal([]byte(body), &jsonResponse)
-
-		if err != nil {
-			log.Error("SGNL Error: could not unmarshal json response from the access service: %s\n", err)
-		}
-
-		// Check SGNL decision. If allowed, return ok. If not allowed, then return PERMISSION_DENIED and 403 Forbidden.
-
-		if jsonResponse.Decisions[0].Decision == "Allow" {
-			log.Debug("Returning rpc.OK")
-			return &auth.CheckResponse{
-				Status: &rpcstatus.Status{
-					Code: int32(rpc.OK),
+	if len(principal) == 0 {
+		// If no principal in header, then return unauthenticated.
+		log.Debug("Principal not in header.")
+		return &auth.CheckResponse{
+			Status: &rpcstatus.Status{
+				Code: int32(rpc.UNAUTHENTICATED),
+			},
+			HttpResponse: &auth.CheckResponse_DeniedResponse{
+				DeniedResponse: &auth.DeniedHttpResponse{
+					Status: &envoy_type.HttpStatus{
+						Code: envoy_type.StatusCode_Unauthorized,
+					},
+					Body: "Principal header is malformed or was not provided. ",
 				},
-				HttpResponse: &auth.CheckResponse_OkResponse{
-					OkResponse: &auth.OkHttpResponse{
-						Headers: []*core.HeaderValueOption{
-							{
-								Header: &core.HeaderValue{
-									Key:   "x-custom-sgnl-authz",
-									Value: "allow",
-								},
+			},
+		}, nil
+	}
+
+	// The asset defaults to the request path without the query string, and the action to the HTTP method.
+	// Both can be overridden in config.json to match the policies in SGNL.
+
+	assetID, _, _ := strings.Cut(httpReq.GetPath(), "?")
+
+	if a.assetHeader != "" {
+		assetID = httpReq.GetHeaders()[a.assetHeader]
+
+		if len(assetID) == 0 {
+			log.Errorf("SGNL ERROR: the %q header that carries the asset ID is missing.", a.assetHeader)
+			return denyResponse(), nil
+		}
+	}
+
+	action := httpReq.GetMethod()
+
+	if a.action != "" {
+		action = a.action
+	}
+
+	allowed, err := a.evaluate(ctx, principal, assetID, action)
+	if err != nil {
+		// Fail closed: an error talking to SGNL must never result in an allow.
+		log.Error("SGNL ERROR: ", err)
+	}
+
+	// If allowed, return ok.
+	if err == nil && allowed {
+		log.Debug("Returning rpc.OK")
+		return &auth.CheckResponse{
+			Status: &rpcstatus.Status{
+				Code: int32(rpc.OK),
+			},
+			HttpResponse: &auth.CheckResponse_OkResponse{
+				OkResponse: &auth.OkHttpResponse{
+					Headers: []*core.HeaderValueOption{
+						{
+							Header: &core.HeaderValue{
+								Key:   "x-custom-sgnl-authz",
+								Value: "allow",
 							},
 						},
 					},
 				},
-			}, nil
-		} else {
-			log.Debug("Returning rpc.PERMISSION_DENIED and HTTP Forbidden.")
-			return &auth.CheckResponse{
-				Status: &rpcstatus.Status{
-					Code: int32(rpc.PERMISSION_DENIED),
-				},
-				HttpResponse: &auth.CheckResponse_DeniedResponse{
-					DeniedResponse: &auth.DeniedHttpResponse{
-						Status: &envoy_type.HttpStatus{
-							Code: envoy_type.StatusCode_Forbidden,
-						},
-						Body: "SGNL Authorization Result: Denied",
-					},
-				},
-			}, nil
-
-		}
-
+			},
+		}, nil
 	}
 
-	// If not principal in header, then return unauthenticated.
-	log.Debug("Principal not in header.")
-	return &auth.CheckResponse{
-		Status: &rpcstatus.Status{
-			Code: int32(rpc.UNAUTHENTICATED),
-		},
-		HttpResponse: &auth.CheckResponse_DeniedResponse{
-			DeniedResponse: &auth.DeniedHttpResponse{
-				Status: &envoy_type.HttpStatus{
-					Code: envoy_type.StatusCode_Unauthorized,
-				},
-				Body: "Principal header is malformed or was not provided. ",
-			},
-		},
-	}, nil
+	// If not allowed, then return PERMISSION_DENIED and 403 Forbidden.
+	return denyResponse(), nil
 }
 
 func main() {
@@ -251,24 +283,51 @@ func main() {
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		log.Error("Error reading config file.")
+		log.Error("Error reading config file: ", err)
 		os.Exit(1)
 	} else {
 
 		// Check config items.
 
-		if len(viper.GetString("service.base_config.sgnl_url")) == 0 {
+		sgnlURL := viper.GetString("service.base_config.sgnl_url")
+
+		if len(sgnlURL) == 0 {
 			log.Error("Missing sgnl_url configuration. Check config file.")
 			os.Exit(1)
-		} else {
-			sgnl_url = viper.GetString("service.base_config.sgnl_url")
 		}
 
-		if len(viper.GetString("service.tokens.sgnl_token")) == 0 {
+		parsedURL, err := url.Parse(sgnlURL)
+
+		if err != nil || (parsedURL.Scheme != "http" && parsedURL.Scheme != "https") || parsedURL.Host == "" {
+			log.Error("sgnl_url must be an absolute URL such as https://<access-api-host>/access/v2/evaluations. Check config file.")
+			os.Exit(1)
+		}
+
+		if !strings.HasSuffix(strings.TrimRight(parsedURL.Path, "/"), "/evaluations") {
+			log.Warn("sgnl_url does not end in /evaluations. The SGNL Access Service evaluation endpoint is /access/v2/evaluations.")
+		}
+
+		token := strings.TrimSpace(viper.GetString("service.tokens.sgnl_token"))
+
+		if len(token) == 0 {
 			log.Error("Missing sgnl_token configuration. Check config file.")
 			os.Exit(1)
-		} else {
-			service_bearer_token = viper.GetString("service.tokens.sgnl_token")
+		}
+
+		if strings.Contains(token, "{{") {
+			log.Error("sgnl_token still contains the {{insert your token here}} placeholder. Check config file.")
+			os.Exit(1)
+		}
+
+		// The SGNL Access Service rejects an Authorization header that does not start with "Bearer ".
+		if !strings.HasPrefix(token, "Bearer ") {
+			token = "Bearer " + token
+		}
+
+		requestTimeout := defaultRequestTimeout
+
+		if d := viper.GetDuration("service.base_config.request_timeout"); d > 0 {
+			requestTimeout = d
 		}
 
 		if len(viper.GetString("service.base_config.service_port")) == 0 {
@@ -305,16 +364,13 @@ func main() {
 		listener, err := net.Listen("tcp", *grpcport)
 
 		if err != nil {
+			log.Error("Failed on port: ", sgnl_port_str)
 			log.Fatalf("Failed to initialize a gRPC listener.: %v", err)
-			log.Error("Faild on port: ", sgnl_port_str)
 		}
 
 		// Limit concurrent streams to 10.
 
 		options := []grpc.ServerOption{grpc.MaxConcurrentStreams(10)}
-
-		//Append to opts.
-		options = append(options)
 
 		//Create gRPC server.
 
@@ -322,7 +378,14 @@ func main() {
 
 		// Register the SGNL authorization service.
 
-		auth.RegisterAuthorizationServer(server, &sgnlServer{})
+		auth.RegisterAuthorizationServer(server, &sgnlServer{
+			url:             sgnlURL,
+			token:           token,
+			client:          &http.Client{Timeout: requestTimeout},
+			principalHeader: strings.ToLower(viper.GetString("service.base_config.principal_header")),
+			action:          viper.GetString("service.base_config.action"),
+			assetHeader:     strings.ToLower(viper.GetString("service.base_config.asset_id_header")),
+		})
 
 		// Register the health service.
 
@@ -330,6 +393,8 @@ func main() {
 
 		// Listen and serve.
 
-		server.Serve(listener)
+		if err := server.Serve(listener); err != nil {
+			log.Fatalf("gRPC server stopped: %v", err)
+		}
 	}
 }

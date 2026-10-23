@@ -1,5 +1,9 @@
 admin:
-  access_log_path: /dev/null
+  access_log:
+  - name: envoy.access_loggers.file
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+      path: /dev/null
   address:
     socket_address:
       address: 127.0.0.1
@@ -48,9 +52,14 @@ static_resources:
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
               transport_api_version: V3
+              # Deny the request if the authorization service cannot be reached.
+              failure_mode_allow: false
               grpc_service:
                 envoy_grpc:
                   cluster_name: ext-authz
+                # The default is 200ms, which is too short for a round trip to the SGNL Access Service.
+                # Keep this larger than request_timeout in config.json (default 3s).
+                timeout: 5s
           - name: envoy.filters.http.router
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router      
@@ -73,9 +82,15 @@ static_resources:
                 port_value: 11000
 
         
+  # Replace 127.0.0.1:8223 below with the host and port of the SGNL ext_authz service
+  # (service_port in config/config.json).
   - name: ext-authz
     type: static
-    http2_protocol_options: {}
+    typed_extension_protocol_options:
+      envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+        "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+        explicit_http_config:
+          http2_protocol_options: {}
     load_assignment:
       cluster_name: ext-authz
       endpoints:

@@ -4,10 +4,10 @@
 			"sgnl_token": "Bearer {{insert your token here}}"
 		},
 		"base_config": {
-			"sgnl_url": "{{SGNL Access API Endpoint}}",
+			"sgnl_url": "https://{{SGNL Access API host}}/access/v2/evaluations",
 			"service_port": 8223,
-			"log_level": "Info"
+			"log_level": "Info",
+			"request_timeout": "3s"
 		}
 	}
 }
-

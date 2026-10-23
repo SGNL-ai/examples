@@ -1,4 +1,4 @@
-module main
+module github.com/SGNL-ai/examples/envoy/sgnl_ext_authz
 
 go 1.25
 
